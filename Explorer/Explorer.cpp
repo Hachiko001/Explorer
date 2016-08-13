@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Explorer.h"
-
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -17,6 +16,9 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+void setCreateListview(HWND hWnd);
+INT_PTR loadInfo(TCHAR *szdir);
 void choosePath(HWND hWnd);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -74,12 +76,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_EXPLORER));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_EXPLORER);
     wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
     return RegisterClassExW(&wcex);
 }
@@ -140,6 +142,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
 			case ID_EXPLORER_FOLDER:
 				choosePath(hWnd);
+				setCreateListview(hWnd);
+				//loadInfo(szDir);
 				break;
 
             default:
@@ -203,4 +207,97 @@ void choosePath(HWND hWnd)
 		SHGetPathFromIDList(lpItem, szDir);
 	}
 	//MessageBox(hWnd, szDir, _T("Test"), MB_OK);
+}
+
+INT_PTR loadInfo(HWND hWnd,TCHAR *szdir)
+{
+	WIN32_FIND_DATA ffd;
+	LARGE_INTEGER filesize;
+	size_t length_of_arg;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+	DWORD dwError = 0;
+
+	StringCchLength(szdir, MAX_PATH, &length_of_arg);
+
+	if (length_of_arg > (MAX_PATH - 3))
+	{
+		_tprintf(TEXT("\nDirectory path is too long.\n"));
+		return (-1);
+	}
+
+	_tprintf(TEXT("\nTarget directory is %s\n\n"), szDir);
+
+	// Prepare string for use with FindFile functions.  First, copy the
+	// string to a buffer, then append '\*' to the directory name.
+
+	StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
+
+	// Find the first file in the directory.
+
+	hFind = FindFirstFile(szDir, &ffd);
+
+	if (INVALID_HANDLE_VALUE == hFind)
+	{
+		MessageBox(hWnd,TEXT("FindFirstFile"),_T("Error"),MB_OK);
+		return 0;
+	}
+
+	// List all the files in the directory with some info about them.
+
+	do
+	{
+		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+//			_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);
+		}
+		else
+		{
+			filesize.LowPart = ffd.nFileSizeLow;
+			filesize.HighPart = ffd.nFileSizeHigh;
+//			_tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
+		}
+	} while (FindNextFile(hFind, &ffd) != 0);
+
+	dwError = GetLastError();
+	if (dwError != ERROR_NO_MORE_FILES)
+	{
+		MessageBox(hWnd, TEXT("FindFirstFile"), _T("Error"), MB_OK);
+		return 0;
+	}
+	return 1;
+}
+
+void setCreateListview(HWND hWnd)
+{
+	RECT rcClient;                       // The parent window's client area.
+
+	GetClientRect(hWnd, &rcClient);
+
+	// Create the list-view window in report view with label editing enabled.
+	HWND hWndListView = CreateWindow(WC_LISTVIEW,L"File Explorer",WS_CHILD | LVS_REPORT | LVS_EDITLABELS|WS_VISIBLE,0, 0,
+		rcClient.right - rcClient.left,rcClient.bottom - rcClient.top,
+		hWnd,(HMENU)IDC_EXPLORER,hInst,NULL);
+	
+	LVCOLUMN col;
+	col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;;
+	col.cchTextMax = MAX_PATH;
+
+	col.iSubItem = 0;
+	col.pszText = TEXT("Size");
+	col.cx = 100;
+	if (ListView_InsertColumn(hWndListView, 0, &col) == -1)
+		MessageBox(hWnd, _T("Error"), _T("Test"), MB_OK);
+
+	col.iSubItem = 1;
+	col.pszText = TEXT("Last modified");
+	col.cx = 200;
+	if (ListView_InsertColumn(hWndListView, 0, &col) == -1)
+		MessageBox(hWnd, _T("Error"), _T("Test"), MB_OK);
+
+	col.iSubItem = 2;
+	col.pszText = TEXT("File name");
+	col.cx = 300;
+	if (ListView_InsertColumn(hWndListView, 0, &col) == -1)
+		MessageBox(hWnd, _T("Error"), _T("Test"), MB_OK);
+
 }
