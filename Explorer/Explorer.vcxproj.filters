@@ -54,16 +54,16 @@
     <Image Include="C:\Users\nguyenvan\Desktop\pkmgo.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="icon1.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="C:\Users\nguyenvan\Desktop\pkmgo.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="C:\Users\nguyenvan\Desktop\1471096264__Master_Ball.ico">
+    <Image Include="..\Icon\1471096639__poke_trainer_three_star.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="C:\Users\nguyenvan\Desktop\1471096639__poke_trainer_three_star.ico">
+    <Image Include="..\icon\icon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\Icon\lucariomega.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
