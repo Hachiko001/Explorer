@@ -246,16 +246,15 @@ INT_PTR loadInfo(HWND hWnd,TCHAR *szdir)
 
 	do
 	{
-		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-		{
-//			_tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);
-		}
-		else
-		{
-			filesize.LowPart = ffd.nFileSizeLow;
-			filesize.HighPart = ffd.nFileSizeHigh;
-//			_tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
-		}
+		LVITEM item;
+		item.mask = LVIF_TEXT;
+		item.cchTextMax = 300;
+
+		item.iSubItem = 2;
+		item.pszText = ffd.cFileName;
+		item.iItem = 0;
+
+
 	} while (FindNextFile(hFind, &ffd) != 0);
 
 	dwError = GetLastError();
