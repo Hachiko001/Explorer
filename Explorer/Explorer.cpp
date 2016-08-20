@@ -244,15 +244,36 @@ INT_PTR loadInfo(HWND hWnd,TCHAR *szdir)
 
 	// List all the files in the directory with some info about them.
 
+	SYSTEMTIME st;
+	LPWSTR szLocalDate, szLocalTime;
+
+	FileTimeToLocalFileTime(&ffd.ftLastWriteTime, &ffd.ftLastWriteTime);
+	FileTimeToSystemTime(&ffd.ftLastWriteTime, &st);
+	GetDateFormat(LOCALE_USER_DEFAULT, DATE_LONGDATE, &st, NULL, szLocalDate, 255);
+	GetTimeFormat(LOCALE_USER_DEFAULT, 0, &st, NULL, szLocalTime, 255);
+	printf("%s %s\n", szLocalDate, szLocalTime);
+
 	do
 	{
 		LVITEM item;
+		LPWSTR lstWriteTime;
+
+		
+
+
 		item.mask = LVIF_TEXT;
 		item.cchTextMax = 300;
 
 		item.iSubItem = 2;
 		item.pszText = ffd.cFileName;
 		item.iItem = 0;
+
+		item.iSubItem = 1;
+		
+
+
+		item.pszText = lstWriteTime;
+
 
 
 	} while (FindNextFile(hFind, &ffd) != 0);

@@ -1,2 +1,6 @@
-﻿  Explorer.vcxproj -> D:\GitHub\Explorer\Debug\Explorer.exe
+﻿  stdafx.cpp
+  Explorer.cpp
+d:\github\explorer\explorer\explorer.cpp(215): warning C4101: 'filesize': unreferenced local variable
+  LINK : D:\GitHub\Explorer\Debug\Explorer.exe not found or not built by the last incremental link; performing full link
+  Explorer.vcxproj -> D:\GitHub\Explorer\Debug\Explorer.exe
   Explorer.vcxproj -> D:\GitHub\Explorer\Debug\Explorer.pdb (Full PDB)
