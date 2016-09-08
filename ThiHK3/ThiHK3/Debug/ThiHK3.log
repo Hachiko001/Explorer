@@ -1,0 +1,4 @@
+﻿  Source.cpp
+d:\github\explorer\thihk3\thihk3\source.cpp(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  ThiHK3.vcxproj -> D:\GitHub\Explorer\ThiHK3\Debug\ThiHK3.exe
+  ThiHK3.vcxproj -> D:\GitHub\Explorer\ThiHK3\Debug\ThiHK3.pdb (Full PDB)
